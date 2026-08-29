@@ -77,13 +77,14 @@ function Dot({ size, delay, offset }: { size: number; delay: number; offset: num
 }
 
 /**
- * The 28x28 assistant slot. While a turn is in flight it shows the three
- * growing dots from the Figma; once answered it cross-fades to the pinwheel.
+ * The 28x28 assistant slot. In the design this is a rounded control-styled
+ * tile holding the pinwheel; the Chat frame swaps it for three growing dots
+ * while a quick reply is still being composed.
  */
 export function AssistantAvatar({ thinking }: { thinking: boolean }) {
   if (thinking) {
     return (
-      <Animated.View entering={FadeIn.duration(220)} style={styles.avatar}>
+      <Animated.View entering={FadeIn.duration(220)} style={styles.avatarSlot}>
         <View style={styles.dots}>
           <Dot size={4} delay={0} offset={0} />
           <Dot size={6} delay={130} offset={8} />
@@ -93,8 +94,10 @@ export function AssistantAvatar({ thinking }: { thinking: boolean }) {
     );
   }
   return (
-    <Animated.View entering={FadeIn.duration(320)} style={styles.avatar}>
-      <LogoMark size={22} />
+    <Animated.View entering={FadeIn.duration(320)} style={styles.avatarSlot}>
+      <View style={styles.avatarTile}>
+        <LogoMark size={16} />
+      </View>
     </Animated.View>
   );
 }
@@ -121,7 +124,16 @@ const styles = StyleSheet.create({
     ...controlStroke,
   },
   userText: { ...type.label, color: colors.text },
-  avatar: { width: 28, height: 28, alignItems: 'flex-start', justifyContent: 'center', marginLeft: layout.gutter },
+  avatarSlot: { width: 28, height: 28, alignItems: 'flex-start', justifyContent: 'center', marginLeft: layout.gutter },
+  avatarTile: {
+    width: 28,
+    height: 28,
+    borderRadius: 9,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.pill,
+    ...controlStroke,
+  },
   dots: { width: 28, height: 10, justifyContent: 'flex-end' },
   status: { ...type.label, color: colors.text, paddingHorizontal: layout.gutter },
 });

@@ -110,9 +110,14 @@ Two details that are easy to miss and were checked explicitly:
 - **Raised surfaces cast a downward shadow.** Measured as a ~12px falloff
   below the composer with no spread above it, applied as `surfaceShadow`.
 
-Panel internals (tab group, timeline rail, progress fill) are marked `derived`:
-only the Main frame was available as a render, so those values are inferred
-from the measured palette rather than read off the design.
+Type sizes were calibrated rather than guessed: Inter was measured against the
+text-node widths recorded in the Figma file, so `"Edith is thinking..."` comes
+out at 119px as it does in the design. Wrapped copy was matched by line break —
+the report body is 12/18 because 8 lines fill the 144-tall frame in the file.
+
+Panel internals (tab group background, timeline rail, progress fill) are marked
+`derived`: no render of those regions could be sampled, so the values are
+inferred from the measured palette rather than read off the design.
 
 ## Notes
 

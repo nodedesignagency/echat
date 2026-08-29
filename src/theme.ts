@@ -28,6 +28,7 @@ export const colors = {
 
   text: '#FFFFFF',               // measured
   placeholder: '#3E3E40',        // measured — composer placeholder
+  textBody: '#8E8E93',           // report paragraphs, source domains
   textMuted: '#6E6E73',          // derived — secondary labels
   textDim: '#4A4A50',            // derived — inactive / pending
 
@@ -42,6 +43,7 @@ export const colors = {
   rail: 'rgba(255,255,255,0.10)',         // timeline connector, pending
   railActive: 'rgba(255,255,255,0.55)',   // timeline connector, drawn
   progressFill: 'rgba(255,255,255,0.13)',
+  progressStripe: 'rgba(255,255,255,0.92)',  // the filled bar reads near-white
 
   hatch: 'rgba(255,255,255,0.016)',       // measured — +4 levels over the surface
   hatchStrong: 'rgba(255,255,255,0.18)',
@@ -85,15 +87,27 @@ export const font = {
   bold: 'Inter_700Bold',
 } as const;
 
+/*
+ * Sizes calibrated by measuring Inter against the text-node widths recorded in
+ * the Figma file (e.g. "Edith is thinking..." is 119px wide there, which is
+ * Inter Medium at 14px, not 13). Wrapped text was matched by line breaks.
+ */
 export const type = {
   title: { fontFamily: font.bold, fontSize: 16, lineHeight: 19 },
-  tagline: { fontFamily: font.bold, fontSize: 15, lineHeight: 18 },
+  tagline: { fontFamily: font.bold, fontSize: 15.5, lineHeight: 19 },
   body: { fontFamily: font.regular, fontSize: 13, lineHeight: 18 },
-  bodyLoose: { fontFamily: font.regular, fontSize: 13, lineHeight: 24 },
-  label: { fontFamily: font.medium, fontSize: 13, lineHeight: 17 },
-  small: { fontFamily: font.medium, fontSize: 11, lineHeight: 15 },
-  reportTitle: { fontFamily: font.semibold, fontSize: 16, lineHeight: 21 },
-  sectionTitle: { fontFamily: font.semibold, fontSize: 14, lineHeight: 19 },
+  /** Research step copy: 3 lines fill the 72-tall frame in the design. */
+  bodyLoose: { fontFamily: font.regular, fontSize: 14, lineHeight: 24 },
+  /** Report paragraphs: 8 lines fill the 144-tall frame in the design. */
+  reportBody: { fontFamily: font.regular, fontSize: 12, lineHeight: 18 },
+  sourceTitle: { fontFamily: font.regular, fontSize: 12, lineHeight: 15 },
+  domain: { fontFamily: font.regular, fontSize: 13.5, lineHeight: 17 },
+  /** Composer input, pills, status line, panel header — all 14 in the file. */
+  label: { fontFamily: font.medium, fontSize: 14, lineHeight: 17 },
+  percent: { fontFamily: font.medium, fontSize: 13.5, lineHeight: 17 },
+  small: { fontFamily: font.medium, fontSize: 11.5, lineHeight: 15 },
+  reportTitle: { fontFamily: font.semibold, fontSize: 16, lineHeight: 19 },
+  sectionTitle: { fontFamily: font.semibold, fontSize: 16, lineHeight: 19 },
 } as const;
 
 /** Shared motion curves so every transition in the app feels like one system. */

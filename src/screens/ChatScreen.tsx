@@ -389,11 +389,14 @@ function ProTurn({
 
   return (
     <View>
+      {/* The avatar sits above the panel in every Pro Search frame, before and
+          after the research finishes. */}
+      <View style={styles.avatarSlot}>
+        <AssistantAvatar thinking={false} />
+      </View>
+
       {researching && (
         <Animated.View exiting={FadeOut.duration(200)}>
-          <View style={styles.avatarSlot}>
-            <AssistantAvatar thinking />
-          </View>
           <View style={styles.statusRow}>
             <StatusLine text="Edith is thinking…" />
             <View style={styles.percentWrap}>
@@ -457,7 +460,7 @@ const styles = StyleSheet.create({
   percentWrap: { paddingLeft: 8 },
   progressWrap: { marginTop: 12, paddingHorizontal: layout.gutter },
   panelWrapLive: { marginTop: 16 },
-  panelWrap: { marginTop: 24 },
+  panelWrap: { marginTop: 12 },
   answerWrap: { marginTop: 16, paddingHorizontal: layout.gutter },
   answerText: { ...type.bodyLoose, color: colors.text },
   tick: { ...type.title, color: colors.text },

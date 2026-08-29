@@ -54,8 +54,8 @@ export function ReportView({
 
 const styles = StyleSheet.create({
   wrap: { paddingHorizontal: layout.gutter },
-  block: { marginTop: 18 },
+  block: { marginTop: 14 },
   title: { ...type.reportTitle, color: colors.text },
   heading: { ...type.sectionTitle, color: colors.text },
-  paragraph: { ...type.bodyLoose, color: colors.text, opacity: 0.88 },
+  paragraph: { ...type.reportBody, color: colors.textBody },
 });

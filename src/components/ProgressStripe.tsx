@@ -65,7 +65,7 @@ export function ProgressStripe({
           stripeWidth={2}
           angle={-28}
           drift={1.6}
-          color={colors.hatchStrong}
+          color={colors.progressStripe}
         />
       </Animated.View>
     </View>
@@ -75,5 +75,5 @@ export function ProgressStripe({
 const styles = StyleSheet.create({
   track: { height: HEIGHT, borderRadius: HEIGHT / 2, backgroundColor: colors.track, overflow: 'hidden' },
   fill: { height: HEIGHT, backgroundColor: colors.progressFill, overflow: 'hidden' },
-  percent: { ...type.label, color: colors.text, minWidth: 34, textAlign: 'right' },
+  percent: { ...type.percent, color: colors.text, minWidth: 34, textAlign: 'right' },
 });

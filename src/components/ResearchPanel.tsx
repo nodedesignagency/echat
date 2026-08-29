@@ -11,7 +11,8 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { CheckIcon, ChevronIcon, LinkIcon, StepIcon } from './icons';
+import { CheckIcon, ChevronIcon } from './icons';
+import { LogoMark } from './Logo';
 import { colors, controlStroke, layout, surfaceShadow, type } from '../theme';
 import type { Source } from '../engine/mock';
 
@@ -25,7 +26,7 @@ const RAIL_X = 28;
 
 /* ------------------------------ timeline ------------------------------ */
 
-function StepNode({ index, state }: { index: number; state: StepState }) {
+function StepNode({ state }: { state: StepState }) {
   const pulse = useSharedValue(0);
   const pop = useSharedValue(state === 'done' ? 1 : 0);
 
@@ -67,7 +68,9 @@ function StepNode({ index, state }: { index: number; state: StepState }) {
     <View style={styles.node}>
       <Animated.View style={[styles.ring, ringStyle]} />
       <Animated.View style={[StyleSheet.absoluteFill, styles.center, glyphStyle]}>
-        <StepIcon index={index} size={16} color={state === 'pending' ? colors.textDim : colors.text} />
+        <View style={[styles.stepDisc, state === 'pending' && styles.stepDiscPending]}>
+          <LogoMark size={12} color={state === 'pending' ? colors.textMuted : colors.text} />
+        </View>
       </Animated.View>
       <Animated.View style={[StyleSheet.absoluteFill, styles.center, doneStyle]}>
         <View style={styles.doneDot}>
@@ -124,7 +127,7 @@ function TimelineStep({
   return (
     <View style={[styles.step, last && styles.stepLast]} onLayout={(e) => onLayout?.(e.nativeEvent.layout.y)}>
       <View style={styles.gutterCol}>
-        <StepNode index={index} state={state} />
+        <StepNode state={state} />
         {!last && <Connector active={state === 'done'} height={STEP_PITCH - 32} />}
       </View>
       <Animated.Text style={[styles.stepText, textStyle]}>{text}</Animated.Text>
@@ -134,6 +137,31 @@ function TimelineStep({
 
 /* ------------------------------ resources ------------------------------ */
 
+/** Brand colours for the domains the demo cites, with a stable fallback. */
+const BRAND: Record<string, string> = {
+  'quora.com': '#B92B27',
+  'nngroup.com': '#1B4C8C',
+  'interaction-design.org': '#0E7C66',
+  'm3.material.io': '#4285F4',
+  'developer.apple.com': '#4A4A4F',
+  'uxdesign.cc': '#A259FF',
+  'smashingmagazine.com': '#D33A2C',
+  'wikipedia.org': '#3A3A3C',
+  'medium.com': '#1A8917',
+  'arxiv.org': '#B31B1B',
+  'nature.com': '#0B6E4F',
+  'github.com': '#3A3A3C',
+  'stackoverflow.com': '#F48024',
+  'developer.mozilla.org': '#005A9C',
+};
+
+function brandColor(domain: string): string {
+  if (BRAND[domain]) return BRAND[domain];
+  let h = 0;
+  for (let i = 0; i < domain.length; i += 1) h = (h * 31 + domain.charCodeAt(i)) % 360;
+  return `hsl(${h}, 42%, 42%)`;
+}
+
 function SourceCard({ source, index }: { source: Source; index: number }) {
   return (
     <Animated.View entering={FadeIn.delay(index * 80).duration(320)} style={styles.sourceCard}>
@@ -142,8 +170,8 @@ function SourceCard({ source, index }: { source: Source; index: number }) {
       </Text>
       <View style={styles.sourceRule} />
       <View style={styles.sourceMeta}>
-        <View style={styles.favicon}>
-          <LinkIcon size={11} />
+        <View style={[styles.favicon, { backgroundColor: brandColor(source.domain) }]}>
+          <Text style={styles.faviconLetter}>{source.domain[0].toUpperCase()}</Text>
         </View>
         <Text style={styles.sourceDomain}>{source.domain}</Text>
       </View>
@@ -217,7 +245,7 @@ export function ResearchPanel({ title, mode, onToggle, steps, sources, tab, onTa
   const [contentHeight, setContentHeight] = useState(0);
   const stepY = useRef<number[]>([]);
   const body = useSharedValue(mode === 'live' ? LIVE_BODY : 0);
-  const chevron = useSharedValue(mode === 'collapsed' ? 0 : 1);
+  const chevron = useSharedValue(mode === 'expanded' ? 1 : 0);
   const scroller = useRef<ScrollView>(null);
 
   const activeIndex = steps.findIndex((s) => s.state === 'active');
@@ -225,7 +253,7 @@ export function ResearchPanel({ title, mode, onToggle, steps, sources, tab, onTa
   useEffect(() => {
     const target = mode === 'collapsed' ? 0 : mode === 'live' ? LIVE_BODY : contentHeight;
     body.value = withTiming(target, { duration: 380, easing: Easing.inOut(Easing.cubic) });
-    chevron.value = withTiming(mode === 'collapsed' ? 0 : 1, { duration: 300 });
+    chevron.value = withTiming(mode === 'expanded' ? 1 : 0, { duration: 300 });
   }, [mode, contentHeight, body, chevron]);
 
   // While researching, keep the running step in view inside the short window.
@@ -326,19 +354,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 6,
     gap: 4,
-    borderRadius: 12,
+    borderRadius: 16,
     backgroundColor: colors.segment,
+    borderWidth: 1,
+    borderColor: colors.controlBorder,
   },
   tabIndicator: {
     position: 'absolute',
     top: 6,
     bottom: 6,
-    borderRadius: 9,
+    borderRadius: 13,
     backgroundColor: colors.pill,
     ...controlStroke,
   },
   tab: { height: 27, paddingHorizontal: 12, alignItems: 'center', justifyContent: 'center' },
-  tabText: { ...type.small, color: colors.textMuted },
+  tabText: { ...type.small, color: colors.textBody },
   tabTextOn: { color: colors.text },
 
   timeline: { paddingLeft: 16, paddingRight: 15 },
@@ -347,6 +377,18 @@ const styles = StyleSheet.create({
   stepLast: { minHeight: 0 },
   gutterCol: { width: 24, alignItems: 'center' },
   node: { width: 24, height: 24, alignItems: 'center', justifyContent: 'center' },
+  // The design marks every step with the pinwheel inside a thin circle.
+  stepDisc: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.controlBorder,
+    backgroundColor: colors.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  stepDiscPending: { borderColor: colors.rail },
   center: { alignItems: 'center', justifyContent: 'center' },
   ring: { position: 'absolute', width: 24, height: 24, borderRadius: 12, backgroundColor: colors.ring },
   doneDot: { width: 18, height: 18, borderRadius: 9, backgroundColor: colors.done, alignItems: 'center', justifyContent: 'center' },
@@ -354,19 +396,20 @@ const styles = StyleSheet.create({
   railFill: { width: 1.5, borderRadius: 1, backgroundColor: colors.railActive },
   stepText: { ...type.bodyLoose, color: colors.text, flex: 1, marginLeft: 10, marginTop: 1 },
 
-  sources: { paddingHorizontal: 12 },
-  sourceCard: { paddingVertical: 12 },
-  sourceTitle: { ...type.body, color: colors.text, lineHeight: 15 * 1.15 },
-  sourceRule: { height: StyleSheet.hairlineWidth, backgroundColor: colors.surfaceBorder, marginTop: 14 },
-  sourceMeta: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 12 },
-  favicon: {
-    width: 20,
-    height: 20,
-    borderRadius: 6,
-    backgroundColor: colors.pill,
-    alignItems: 'center',
-    justifyContent: 'center',
-    ...controlStroke,
+  // Figma: 345-wide cards inside the 369 panel, 102 tall, 12px apart, each a
+  // bordered card with a full-bleed rule between title and attribution.
+  sources: { paddingHorizontal: 12, gap: 12 },
+  sourceCard: {
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.surfaceBorder,
+    overflow: 'hidden',
+    paddingTop: 12,
   },
-  sourceDomain: { ...type.label, color: colors.textMuted },
+  sourceTitle: { ...type.sourceTitle, color: colors.text, paddingLeft: 12, paddingRight: 11 },
+  sourceRule: { height: 1, backgroundColor: colors.surfaceBorder, marginTop: 16 },
+  sourceMeta: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 12, paddingVertical: 10 },
+  favicon: { width: 20, height: 20, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
+  faviconLetter: { fontFamily: type.small.fontFamily, fontSize: 11, lineHeight: 14, color: colors.text },
+  sourceDomain: { ...type.domain, color: colors.textBody },
 });
