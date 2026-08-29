@@ -5,6 +5,9 @@ import { Hatch } from './Hatch';
 import { colors, type } from '../theme';
 
 const HEIGHT = 6;
+const ANGLE = -28;
+/** How far the slanted edge leans across the bar's height. */
+const LEAN = Math.abs(Math.tan((ANGLE * Math.PI) / 180)) * HEIGHT;
 
 /**
  * Percentage readout. Kept as its own component so its ~15fps ticks only
@@ -31,8 +34,11 @@ export function ProgressPercent({ target }: { target: number }) {
 }
 
 /**
- * Segmented progress bar: a dark track filled with the same drifting diagonal
- * stripes used behind the composer, so progress reads as "work happening".
+ * Progress bar built from the same drifting diagonal stripes as the composer.
+ *
+ * The stripe layer spans the whole track and a skewed cover masks the unfilled
+ * part, so the leading edge is cut on the stripe angle instead of ending in a
+ * flat vertical chop.
  */
 export function ProgressStripe({
   progress,
@@ -44,36 +50,49 @@ export function ProgressStripe({
   /** Match this to the step cadence so the bar never visibly stalls. */
   duration?: number;
 }) {
-  const w = useSharedValue(0);
+  const p = useSharedValue(0);
 
   useEffect(() => {
-    w.value = withTiming(Math.max(0, Math.min(1, progress)), {
+    p.value = withTiming(Math.max(0, Math.min(1, progress)), {
       duration,
       easing: Easing.out(Easing.cubic),
     });
-  }, [progress, duration, w]);
+  }, [progress, duration, p]);
 
-  const fillStyle = useAnimatedStyle(() => ({ width: `${w.value * 100}%` }));
+  // The cover slides right as the bar fills; skewing it slants the cut edge.
+  const coverStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: p.value * (width + LEAN) }, { skewX: `${ANGLE}deg` }],
+  }));
 
   return (
     <View style={[styles.track, { width }]}>
-      <Animated.View style={[styles.fill, fillStyle]}>
+      <View style={styles.fill}>
         <Hatch
           width={width}
           height={HEIGHT}
           pitch={4}
           stripeWidth={2}
-          angle={-28}
+          angle={ANGLE}
           drift={1.6}
           color={colors.progressStripe}
         />
-      </Animated.View>
+      </View>
+      <Animated.View style={[styles.cover, { width: width + LEAN * 2 }, coverStyle]} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   track: { height: HEIGHT, borderRadius: HEIGHT / 2, backgroundColor: colors.track, overflow: 'hidden' },
-  fill: { height: HEIGHT, backgroundColor: colors.progressFill, overflow: 'hidden' },
+  fill: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: colors.progressFill,
+    overflow: 'hidden',
+  },
+  cover: { position: 'absolute', top: 0, bottom: 0, left: -LEAN, backgroundColor: colors.track },
   percent: { ...type.percent, color: colors.text, minWidth: 34, textAlign: 'right' },
 });

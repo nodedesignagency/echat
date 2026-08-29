@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { StreamingText } from './StreamingText';
+import { RevealText } from './RevealText';
 import { colors, layout, type } from '../theme';
 import type { ReportBlock } from '../engine/mock';
 
@@ -37,12 +37,11 @@ export function ReportView({
 
         return (
           <Animated.View key={i} entering={FadeInDown.duration(320).delay(40)} style={styles.block}>
-            <StreamingText
+            <RevealText
               text={block.text}
               style={style}
               enabled={stream}
-              chunk={block.kind === 'paragraph' ? 12 : 4}
-              tick={22}
+              speed={block.kind === 'paragraph' ? 34 : 14}
               onDone={isLast ? advance : undefined}
             />
           </Animated.View>

@@ -18,7 +18,7 @@ import { ReportView } from '../components/ReportView';
 import { ResearchPanel, type PanelMode, type StepState, type Tab } from '../components/ResearchPanel';
 import { Sheet, SheetRow, Switch } from '../components/Sheet';
 import { SpinningLogo } from '../components/Logo';
-import { StreamingText } from '../components/StreamingText';
+import { RevealText } from '../components/RevealText';
 import { AssistantAvatar, StatusLine, UserBubble } from '../components/Message';
 import { TopBar } from '../components/TopBar';
 import { VoiceOverlay } from '../components/VoiceOverlay';
@@ -356,12 +356,11 @@ function QuickTurn({ turn, onDone }: { turn: Turn; onDone: () => void }) {
       <StatusLine text={thinking ? 'EDITH is thinking…' : turn.answer.label} dim={!thinking} />
       {!thinking && (
         <Animated.View entering={FadeIn.duration(240)} style={styles.answerWrap}>
-          <StreamingText
+          <RevealText
             text={turn.answer.quick}
             style={styles.answerText}
             enabled={turn.status === 'writing'}
-            chunk={3}
-            tick={24}
+            speed={13}
             onDone={onDone}
           />
         </Animated.View>

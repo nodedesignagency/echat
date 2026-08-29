@@ -3,6 +3,8 @@ import { LayoutChangeEvent, Pressable, ScrollView, StyleSheet, Text, View } from
 import Animated, {
   Easing,
   FadeIn,
+  FadeOut,
+  LinearTransition,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
@@ -242,19 +244,15 @@ type PanelProps = {
 };
 
 export function ResearchPanel({ title, mode, onToggle, steps, sources, tab, onTab }: PanelProps) {
-  const [contentHeight, setContentHeight] = useState(0);
   const stepY = useRef<number[]>([]);
-  const body = useSharedValue(mode === 'live' ? LIVE_BODY : 0);
   const chevron = useSharedValue(mode === 'expanded' ? 1 : 0);
   const scroller = useRef<ScrollView>(null);
 
   const activeIndex = steps.findIndex((s) => s.state === 'active');
 
   useEffect(() => {
-    const target = mode === 'collapsed' ? 0 : mode === 'live' ? LIVE_BODY : contentHeight;
-    body.value = withTiming(target, { duration: 380, easing: Easing.inOut(Easing.cubic) });
     chevron.value = withTiming(mode === 'expanded' ? 1 : 0, { duration: 300 });
-  }, [mode, contentHeight, body, chevron]);
+  }, [mode, chevron]);
 
   // While researching, keep the running step in view inside the short window.
   useEffect(() => {
@@ -266,14 +264,13 @@ export function ResearchPanel({ title, mode, onToggle, steps, sources, tab, onTa
     return () => clearTimeout(id);
   }, [activeIndex, mode]);
 
-  const bodyStyle = useAnimatedStyle(() => ({ height: body.value }));
   const chevronStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${chevron.value * 180}deg` }],
     opacity: 0.6 + chevron.value * 0.4,
   }));
 
   const content = (
-    <View onLayout={(e) => setContentHeight(e.nativeEvent.layout.height)} style={styles.content}>
+    <View style={styles.content}>
       {tab === 'activity' ? (
         <View style={styles.timeline}>
           {steps.map((s, i) => (
@@ -300,7 +297,7 @@ export function ResearchPanel({ title, mode, onToggle, steps, sources, tab, onTa
   );
 
   return (
-    <View style={styles.panel}>
+    <Animated.View layout={LinearTransition.duration(320)} style={styles.panel}>
       <Pressable onPress={onToggle} style={styles.header} accessibilityRole="button">
         <Text style={styles.headerTitle}>{title}</Text>
         <View style={styles.headerSpacer} />
@@ -312,21 +309,27 @@ export function ResearchPanel({ title, mode, onToggle, steps, sources, tab, onTa
 
       <View style={styles.divider} />
 
-      <Animated.View style={[styles.body, bodyStyle]}>
-        {mode === 'live' ? (
-          <ScrollView
-            ref={scroller}
-            scrollEnabled={false}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.liveScroll}
-          >
-            {content}
-          </ScrollView>
-        ) : (
-          content
-        )}
-      </Animated.View>
-    </View>
+      {mode !== 'collapsed' && (
+        <Animated.View
+          entering={FadeIn.duration(220)}
+          exiting={FadeOut.duration(140)}
+          style={mode === 'live' ? styles.bodyLive : undefined}
+        >
+          {mode === 'live' ? (
+            <ScrollView
+              ref={scroller}
+              scrollEnabled={false}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.liveScroll}
+            >
+              {content}
+            </ScrollView>
+          ) : (
+            content
+          )}
+        </Animated.View>
+      )}
+    </Animated.View>
   );
 }
 
@@ -343,7 +346,7 @@ const styles = StyleSheet.create({
   header: { height: HEADER, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, gap: 8 },
   headerTitle: { ...type.label, color: colors.text, flexShrink: 0 },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: colors.surfaceBorder },
-  body: { overflow: 'hidden' },
+  bodyLive: { height: LIVE_BODY, overflow: 'hidden' },
   liveScroll: { paddingBottom: 8 },
   content: { paddingTop: 16, paddingBottom: 16 },
 

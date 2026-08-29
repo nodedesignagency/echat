@@ -54,12 +54,16 @@ thread:
 - Composer lifts and its border brightens on focus; the send button springs
   awake once there is text
 - Diagonal hatch texture behind the composer toolbar drifts continuously, and
-  the same barber-pole stripes fill the progress bar
+  the same barber-pole stripes fill the progress bar, whose leading edge is cut
+  on the stripe angle rather than ending in a flat vertical chop
 - User messages spring in from the right; thinking dots pulse in sequence
-- Answers stream character by character with a trailing caret
+- Answers arrive as a word-by-word wave: each word rises, fades and settles
+  as the leading edge sweeps past, driven by one shared value rather than one
+  animation per word
 - Research steps reveal in turn, the connector rail draws downward as each one
   finishes, the active step pulses and completed steps pop into a check
-- Panel height animates between its live, collapsed and expanded modes, and the
+- Panel height animates between its live, collapsed and expanded modes via a
+  layout transition (no measured height, so content can never clip), and the
   tab indicator slides between measured tab positions
 - Sheets slide up over a fading backdrop; the voice overlay runs 26 independent
   waveform bars
