@@ -84,10 +84,40 @@ src/components/
   Sheet.tsx / VoiceOverlay.tsx  overlays
 ```
 
+## Design tokens
+
+`src/theme.ts` is the single source of truth — no component contains a colour
+literal. Values were sampled pixel-by-pixel from the exported Figma frame, and
+each token is commented `measured` or `derived`:
+
+| Token | Value | Where it came from |
+| --- | --- | --- |
+| `bg` | `#0B0B0D` | measured — 84% of the frame |
+| `surface` | `#0E0E10` | measured — composer / panel fill |
+| `surfaceBorder` | `#1C1C1E` | measured — 1px stroke around surfaces |
+| `divider` | `#2D2D2F` | measured — rule between composer rows |
+| `pill` | `#292929` | measured — every control fill |
+| `controlBorderTop/·/Bottom` | `#444248` / `#37363B` / `#2B2A2F` | measured — the bevelled control stroke |
+| `send` / `sendBorder` | `#CECECE` / `#EBEBEB` | measured |
+| `placeholder` | `#3E3E40` | measured |
+| `hatch` | `+4 levels`, 9.3px pitch, 4.4px stripe | measured |
+
+Two details that are easy to miss and were checked explicitly:
+
+- **Controls carry a top-lit bevel.** The 1px stroke is lightest on the top
+  edge and darkest on the bottom. React Native honours per-side border
+  colours, so `controlStroke` in the theme reproduces it exactly.
+- **Raised surfaces cast a downward shadow.** Measured as a ~12px falloff
+  below the composer with no spread above it, applied as `surfaceShadow`.
+
+Panel internals (tab group, timeline rail, progress fill) are marked `derived`:
+only the Main frame was available as a render, so those values are inferred
+from the measured palette rather than read off the design.
+
 ## Notes
 
-- Colours and spacing were sampled from the exported Figma frames rather than
-  eyeballed; the composer is 369x114 at a 12px gutter, matching the file.
+- The composer is 369x114 at a 12px gutter — 1px stroke, 56px input row, 1px
+  rule, 55px toolbar row, 1px stroke — matching the file exactly.
 - The logo is a traced vector of the original artwork (four blades at 90-degree
   steps plus the centre sparkle), not an approximation.
 - Attachments are the one control that is presentational — the `+` sheet offers

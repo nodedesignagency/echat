@@ -2,7 +2,7 @@ import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors, layout, type } from '../theme';
+import { colors, controlStroke, layout, type } from '../theme';
 
 /** Backdrop + slide-up container shared by every overlay in the app. */
 export function Sheet({
@@ -72,21 +72,21 @@ export function Switch({ on }: { on: boolean }) {
 }
 
 const styles = StyleSheet.create({
-  backdrop: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.6)' },
+  backdrop: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: colors.scrim },
   sheet: {
     position: 'absolute',
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: colors.surfaceRaised,
+    backgroundColor: colors.surface,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     borderTopWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.surfaceBorder,
     paddingHorizontal: layout.gutter + 4,
     paddingTop: 10,
   },
-  grabber: { alignSelf: 'center', width: 38, height: 4, borderRadius: 2, backgroundColor: colors.border, marginBottom: 14 },
+  grabber: { alignSelf: 'center', width: 38, height: 4, borderRadius: 2, backgroundColor: colors.controlBorder, marginBottom: 14 },
   title: { ...type.title, color: colors.text },
   subtitle: { ...type.body, color: colors.textMuted, marginTop: 4 },
   body: { marginTop: 8 },
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     gap: 12,
     paddingVertical: 14,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.border,
+    borderBottomColor: colors.surfaceBorder,
   },
   rowPressed: { opacity: 0.55 },
   rowLabel: { ...type.label, color: colors.text },
@@ -105,11 +105,12 @@ const styles = StyleSheet.create({
     width: 40,
     height: 24,
     borderRadius: 12,
-    backgroundColor: 'rgba(255,255,255,0.12)',
+    backgroundColor: colors.toggleTrack,
     padding: 3,
     justifyContent: 'center',
+    ...controlStroke,
   },
-  switchTrackOn: { backgroundColor: 'rgba(255,255,255,0.30)' },
-  switchKnob: { width: 18, height: 18, borderRadius: 9, backgroundColor: colors.textDim },
+  switchTrackOn: { backgroundColor: colors.pill },
+  switchKnob: { width: 16, height: 16, borderRadius: 8, backgroundColor: colors.send },
   switchKnobOn: { backgroundColor: colors.text, transform: [{ translateX: 16 }] },
 });

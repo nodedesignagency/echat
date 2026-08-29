@@ -23,7 +23,7 @@ import { AssistantAvatar, StatusLine, UserBubble } from '../components/Message';
 import { TopBar } from '../components/TopBar';
 import { VoiceOverlay } from '../components/VoiceOverlay';
 import { answerFor, SUGGESTIONS, type Answer } from '../engine/mock';
-import { colors, layout, type } from '../theme';
+import { colors, controlStroke, layout, type } from '../theme';
 
 /** How long each Pro Search step takes to "run". */
 const STEP_MS = 2200;
@@ -437,12 +437,11 @@ const styles = StyleSheet.create({
   chip: {
     ...type.body,
     color: colors.textMuted,
-    borderWidth: 1,
-    borderColor: colors.border,
     borderRadius: 16,
     paddingHorizontal: 12,
     paddingVertical: 7,
     overflow: 'hidden',
+    ...controlStroke,
   },
   scrollContent: { paddingBottom: 24 },
   firstTurn: { paddingTop: 40 },

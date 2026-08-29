@@ -6,7 +6,7 @@ type IconProps = { size?: number; color?: string; strokeWidth?: number };
 
 const base = (size: number) => ({ width: size, height: size, viewBox: '0 0 24 24' });
 
-export function HistoryIcon({ size = 15, color = colors.text, strokeWidth = 1.7 }: IconProps) {
+export function HistoryIcon({ size = 15, color = colors.text, strokeWidth = 2 }: IconProps) {
   return (
     <Svg {...base(size)} fill="none">
       <Path
@@ -22,7 +22,7 @@ export function HistoryIcon({ size = 15, color = colors.text, strokeWidth = 1.7 
   );
 }
 
-export function ComposeIcon({ size = 15, color = colors.text, strokeWidth = 1.7 }: IconProps) {
+export function ComposeIcon({ size = 15, color = colors.text, strokeWidth = 2 }: IconProps) {
   return (
     <Svg {...base(size)} fill="none">
       <Path
@@ -43,7 +43,7 @@ export function ComposeIcon({ size = 15, color = colors.text, strokeWidth = 1.7 
   );
 }
 
-export function SettingsIcon({ size = 16, color = colors.text, strokeWidth = 1.6 }: IconProps) {
+export function SettingsIcon({ size = 17, color = colors.text, strokeWidth = 1.8 }: IconProps) {
   return (
     <Svg {...base(size)} fill="none">
       <Circle cx={12} cy={12} r={3.1} stroke={color} strokeWidth={strokeWidth} />
@@ -58,7 +58,7 @@ export function SettingsIcon({ size = 16, color = colors.text, strokeWidth = 1.6
   );
 }
 
-export function PlusIcon({ size = 17, color = colors.text, strokeWidth = 1.9 }: IconProps) {
+export function PlusIcon({ size = 18, color = colors.text, strokeWidth = 2 }: IconProps) {
   return (
     <Svg {...base(size)} fill="none">
       <Path d="M12 5v14M5 12h14" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" />
@@ -66,7 +66,7 @@ export function PlusIcon({ size = 17, color = colors.text, strokeWidth = 1.9 }: 
   );
 }
 
-export function ArrowUpIcon({ size = 16, color = colors.accentInk, strokeWidth = 2 }: IconProps) {
+export function ArrowUpIcon({ size = 17, color = colors.accentInk, strokeWidth = 2.2 }: IconProps) {
   return (
     <Svg {...base(size)} fill="none">
       <Path d="M12 19V5.5" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" />
@@ -79,6 +79,16 @@ export function ChevronIcon({ size = 12, color = colors.text, strokeWidth = 1.8 
   return (
     <Svg width={size} height={size * 0.5} viewBox="0 0 12 6" fill="none">
       <Path d="M1 1l5 4 5-4" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  );
+}
+
+/** Stacked up/down chevrons beside the ECHAT wordmark (9x14 in the design). */
+export function SelectorIcon({ size = 9, color = colors.text, strokeWidth = 1.5 }: IconProps) {
+  return (
+    <Svg width={size} height={size * (14 / 9)} viewBox="0 0 9 14" fill="none">
+      <Path d="M1 5.2 4.5 1.7 8 5.2" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" />
+      <Path d="M1 8.8 4.5 12.3 8 8.8" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" />
     </Svg>
   );
 }

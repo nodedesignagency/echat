@@ -11,7 +11,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { LogoMark } from './Logo';
-import { colors, layout, type } from '../theme';
+import { colors, controlStroke, layout, type } from '../theme';
 
 /** Right-aligned user message, rendered as a pill exactly like the Figma. */
 export function UserBubble({ text }: { text: string }) {
@@ -118,6 +118,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     maxWidth: '82%',
     backgroundColor: colors.pill,
+    ...controlStroke,
   },
   userText: { ...type.label, color: colors.text },
   avatar: { width: 28, height: 28, alignItems: 'flex-start', justifyContent: 'center', marginLeft: layout.gutter },

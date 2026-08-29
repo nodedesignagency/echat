@@ -1,9 +1,9 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInDown, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
-import { ChevronIcon, ComposeIcon, HistoryIcon, SettingsIcon } from './icons';
+import { ComposeIcon, HistoryIcon, SelectorIcon, SettingsIcon } from './icons';
 import { LogoMark } from './Logo';
-import { colors, layout, motion, type } from '../theme';
+import { colors, controlStroke, layout, motion, type } from '../theme';
 
 /** 32x32 rounded icon button used across the header, with a press-in spring. */
 export function IconButton({
@@ -20,7 +20,7 @@ export function IconButton({
   const press = useSharedValue(0);
   const style = useAnimatedStyle(() => ({
     transform: [{ scale: 1 - press.value * 0.09 }],
-    backgroundColor: press.value > 0.5 ? colors.pillActive : colors.surfaceRaised,
+    backgroundColor: press.value > 0.5 ? colors.pillActive : colors.pill,
   }));
 
   return (
@@ -34,7 +34,14 @@ export function IconButton({
     >
       <Animated.View
         style={[
-          { width: size, height: size, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
+          {
+            width: size,
+            height: size,
+            borderRadius: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+            ...controlStroke,
+          },
           style,
         ]}
       >
@@ -68,11 +75,11 @@ export function TopBar({ onHistory, onNewChat, onSettings, onTitle, busy }: TopB
         <LogoMark size={20} />
         <Text style={styles.titleText}>ECHAT</Text>
         <View style={styles.chevron}>
-          <ChevronIcon size={9} color={colors.text} strokeWidth={2} />
+          <SelectorIcon size={9} />
         </View>
       </Pressable>
 
-      <View style={styles.side}>
+      <View style={[styles.side, styles.sideRight]}>
         <IconButton onPress={onSettings} accessibilityLabel="Settings">
           <SettingsIcon />
         </IconButton>
@@ -90,7 +97,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   side: { flexDirection: 'row', gap: 8, minWidth: 72 },
+  sideRight: { justifyContent: 'flex-end' },
   title: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  titleText: { ...type.title, color: colors.text, letterSpacing: 0.4 },
-  chevron: { marginLeft: -1, transform: [{ translateY: 1 }] },
+  // Figma tracks the wordmark tighter than Inter's default (50px vs 54.7px at 16px bold).
+  titleText: { ...type.title, color: colors.text, letterSpacing: -0.8 },
+  chevron: { marginLeft: 0 },
 });

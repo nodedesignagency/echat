@@ -74,6 +74,6 @@ export function ProgressStripe({
 
 const styles = StyleSheet.create({
   track: { height: HEIGHT, borderRadius: HEIGHT / 2, backgroundColor: colors.track, overflow: 'hidden' },
-  fill: { height: HEIGHT, backgroundColor: 'rgba(255,255,255,0.13)', overflow: 'hidden' },
+  fill: { height: HEIGHT, backgroundColor: colors.progressFill, overflow: 'hidden' },
   percent: { ...type.label, color: colors.text, minWidth: 34, textAlign: 'right' },
 });

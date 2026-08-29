@@ -4,25 +4,67 @@
  */
 
 export const colors = {
-  /* Sampled directly from the Figma frames so the build matches the file. */
-  bg: '#0B0B0D',
-  surface: '#0E0E10',
-  surfaceRaised: '#292929',
-  pill: '#292929',
+  /*
+   * Values marked (measured) were sampled pixel-by-pixel from the exported
+   * Figma frame. The rest are derived from those so the palette stays
+   * internally consistent.
+   */
+  bg: '#0B0B0D',                 // measured — page background
+  surface: '#0E0E10',            // measured — composer / panel fill
+  surfaceBorder: '#1C1C1E',      // measured — 1px stroke around surfaces
+  divider: '#2D2D2F',            // measured — rule between composer rows
+  pill: '#292929',               // measured — every control fill
+
+  /* Controls carry a top-lit bevel: a 1px stroke that is lightest on the top
+   * edge and darkest on the bottom. All three values measured. */
+  controlBorderTop: '#444248',
+  controlBorder: '#37363B',
+  controlBorderBottom: '#2B2A2F',
+
   pillActive: '#333335',
-  border: 'rgba(255,255,255,0.07)',
-  borderSoft: 'rgba(255,255,255,0.05)',
-  text: '#FFFFFF',
-  textMuted: '#8E8E93',
-  textDim: '#5A5A60',
-  placeholder: '#48484D',
-  send: '#CECECE',
+  send: '#CECECE',               // measured — send button fill
+  sendBorder: '#EBEBEB',         // measured — send button stroke
   accentInk: '#0E0E10',
-  toggleTrack: '#0E0E10',
-  hatch: 'rgba(255,255,255,0.028)',
+
+  text: '#FFFFFF',               // measured
+  placeholder: '#3E3E40',        // measured — composer placeholder
+  textMuted: '#6E6E73',          // derived — secondary labels
+  textDim: '#4A4A50',            // derived — inactive / pending
+
+  toggleTrack: '#0E0E10',        // measured — Pro Search toggle track
+  toggleTrackOn: 'rgba(255,255,255,0.14)',
+  focusBorder: '#3A3A40',        // derived — composer stroke while focused
+
+  /* Panel internals. Only the Main frame could be sampled, so these are
+   * derived from the measured palette rather than read off the design. */
+  segment: 'rgba(255,255,255,0.04)',      // tab group background
+  ring: 'rgba(255,255,255,0.18)',         // active step pulse
+  rail: 'rgba(255,255,255,0.10)',         // timeline connector, pending
+  railActive: 'rgba(255,255,255,0.55)',   // timeline connector, drawn
+  progressFill: 'rgba(255,255,255,0.13)',
+
+  hatch: 'rgba(255,255,255,0.016)',       // measured — +4 levels over the surface
   hatchStrong: 'rgba(255,255,255,0.18)',
   track: '#161618',
+  scrim: 'rgba(0,0,0,0.60)',     // sheet backdrop
+  scrimHeavy: 'rgba(6,6,7,0.94)', // voice overlay
   done: '#FFFFFF',
+} as const;
+
+/**
+ * The 1px bevelled stroke shared by every control in the design.
+ * RN honours per-side border colours, which reproduces the Figma gradient.
+ */
+export const controlStroke = {
+  borderWidth: 1,
+  borderColor: colors.controlBorder,
+  borderTopColor: colors.controlBorderTop,
+  borderBottomColor: colors.controlBorderBottom,
+} as const;
+
+/** Soft downward shadow the Figma frame casts under raised surfaces. */
+export const surfaceShadow = {
+  boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.45)',
 } as const;
 
 export const layout = {

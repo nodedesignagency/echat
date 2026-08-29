@@ -10,9 +10,12 @@ import Animated, {
 } from 'react-native-reanimated';
 import { Hatch } from './Hatch';
 import { ArrowUpIcon, PlusIcon, WaveformIcon } from './icons';
-import { colors, layout, type } from '../theme';
+import { colors, controlStroke, layout, surfaceShadow, type } from '../theme';
 
-const ROW = 57;
+/* Figma composer is 114 tall: 1px stroke, a 56 input row, a 1px rule,
+ * a 55 toolbar row, then the closing 1px stroke. */
+const INPUT_ROW = 56;
+const TOOL_ROW = 55;
 
 /** Mini switch inside the Pro Search pill. 24x12 track, per the Figma spec. */
 function ProToggle({ on }: { on: boolean }) {
@@ -23,7 +26,7 @@ function ProToggle({ on }: { on: boolean }) {
   }, [on, v]);
 
   const track = useAnimatedStyle(() => ({
-    backgroundColor: interpolateColor(v.value, [0, 1], [colors.toggleTrack, 'rgba(255,255,255,0.14)']),
+    backgroundColor: interpolateColor(v.value, [0, 1], [colors.toggleTrack, colors.toggleTrackOn]),
   }));
   const knob = useAnimatedStyle(() => ({
     transform: [{ translateX: v.value * 12 }],
@@ -77,13 +80,13 @@ export function Composer({
   }, [canSend, ready]);
 
   const cardStyle = useAnimatedStyle(() => ({
-    borderColor: interpolateColor(focus.value, [0, 1], [colors.border, 'rgba(255,255,255,0.22)']),
+    borderColor: interpolateColor(focus.value, [0, 1], [colors.surfaceBorder, colors.focusBorder]),
     transform: [{ translateY: -focus.value * 2 }],
   }));
 
   const sendStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: (1 - sendPress.value * 0.12) * (0.92 + ready.value * 0.08) }],
-    opacity: 0.82 + ready.value * 0.18,
+    transform: [{ scale: (1 - sendPress.value * 0.12) * (0.94 + ready.value * 0.06) }],
+    opacity: 1,
   }));
 
   const handleSend = () => {
@@ -131,10 +134,12 @@ export function Composer({
         </Pressable>
       </View>
 
+      <View style={styles.rowDivider} />
+
       {/* Bottom row: hatch texture + controls */}
       <View style={styles.bottomRow}>
         <View style={StyleSheet.absoluteFill}>
-          <Hatch width={width} height={ROW} pitch={9} stripeWidth={3.5} drift={9} />
+          <Hatch width={width} height={TOOL_ROW} pitch={9.3} stripeWidth={4.4} drift={9} />
         </View>
 
         <Pressable onPress={onPlus} hitSlop={6} accessibilityLabel="Add attachment" accessibilityRole="button">
@@ -167,8 +172,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderWidth: 1,
     overflow: 'hidden',
+    ...surfaceShadow,
   },
-  topRow: { height: ROW, flexDirection: 'row', alignItems: 'center', paddingLeft: 12, paddingRight: 12 },
+  topRow: { height: INPUT_ROW, flexDirection: 'row', alignItems: 'center', paddingLeft: 12, paddingRight: 12 },
+  rowDivider: { height: 1, backgroundColor: colors.divider },
   input: {
     flex: 1,
     color: colors.text,
@@ -182,11 +189,13 @@ const styles = StyleSheet.create({
     height: 33,
     borderRadius: 17,
     backgroundColor: colors.send,
+    borderWidth: 1,
+    borderColor: colors.sendBorder,
     alignItems: 'center',
     justifyContent: 'center',
   },
   bottomRow: {
-    height: ROW,
+    height: TOOL_ROW,
     flexDirection: 'row',
     alignItems: 'center',
     paddingLeft: 16,
@@ -199,6 +208,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.pill,
+    ...controlStroke,
   },
   proPill: {
     height: 33,
@@ -208,6 +218,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
     backgroundColor: colors.pill,
+    ...controlStroke,
   },
   proPillOn: { backgroundColor: colors.pillActive },
   proText: { ...type.label, color: colors.text },

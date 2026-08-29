@@ -68,7 +68,7 @@ export function VoiceOverlay({ onCancel, onTranscript }: { onCancel: () => void;
 }
 
 const styles = StyleSheet.create({
-  wrap: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(6,6,7,0.94)', alignItems: 'center', justifyContent: 'center' },
+  wrap: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: colors.scrimHeavy, alignItems: 'center', justifyContent: 'center' },
   card: { alignItems: 'center', gap: 22, paddingHorizontal: 32 },
   label: { ...type.title, color: colors.text },
   wave: { flexDirection: 'row', alignItems: 'center', gap: 4, height: 74 },

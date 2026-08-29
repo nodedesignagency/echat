@@ -12,7 +12,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { CheckIcon, ChevronIcon, LinkIcon, StepIcon } from './icons';
-import { colors, layout, type } from '../theme';
+import { colors, controlStroke, layout, surfaceShadow, type } from '../theme';
 import type { Source } from '../engine/mock';
 
 export type StepState = 'pending' | 'active' | 'done';
@@ -308,12 +308,13 @@ const styles = StyleSheet.create({
     borderRadius: layout.panelRadius,
     backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: colors.borderSoft,
+    borderColor: colors.surfaceBorder,
     overflow: 'hidden',
+    ...surfaceShadow,
   },
   header: { height: HEADER, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, gap: 8 },
   headerTitle: { ...type.label, color: colors.text, flexShrink: 0 },
-  divider: { height: StyleSheet.hairlineWidth, backgroundColor: colors.border },
+  divider: { height: StyleSheet.hairlineWidth, backgroundColor: colors.surfaceBorder },
   body: { overflow: 'hidden' },
   liveScroll: { paddingBottom: 8 },
   content: { paddingTop: 16, paddingBottom: 16 },
@@ -326,14 +327,15 @@ const styles = StyleSheet.create({
     padding: 6,
     gap: 4,
     borderRadius: 12,
-    backgroundColor: 'rgba(255,255,255,0.04)',
+    backgroundColor: colors.segment,
   },
   tabIndicator: {
     position: 'absolute',
     top: 6,
     bottom: 6,
     borderRadius: 9,
-    backgroundColor: colors.pillActive,
+    backgroundColor: colors.pill,
+    ...controlStroke,
   },
   tab: { height: 27, paddingHorizontal: 12, alignItems: 'center', justifyContent: 'center' },
   tabText: { ...type.small, color: colors.textMuted },
@@ -346,16 +348,16 @@ const styles = StyleSheet.create({
   gutterCol: { width: 24, alignItems: 'center' },
   node: { width: 24, height: 24, alignItems: 'center', justifyContent: 'center' },
   center: { alignItems: 'center', justifyContent: 'center' },
-  ring: { position: 'absolute', width: 24, height: 24, borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.18)' },
+  ring: { position: 'absolute', width: 24, height: 24, borderRadius: 12, backgroundColor: colors.ring },
   doneDot: { width: 18, height: 18, borderRadius: 9, backgroundColor: colors.done, alignItems: 'center', justifyContent: 'center' },
-  rail: { width: 1.5, borderRadius: 1, backgroundColor: 'rgba(255,255,255,0.10)', marginTop: 4 },
-  railFill: { width: 1.5, borderRadius: 1, backgroundColor: 'rgba(255,255,255,0.55)' },
+  rail: { width: 1.5, borderRadius: 1, backgroundColor: colors.rail, marginTop: 4 },
+  railFill: { width: 1.5, borderRadius: 1, backgroundColor: colors.railActive },
   stepText: { ...type.bodyLoose, color: colors.text, flex: 1, marginLeft: 10, marginTop: 1 },
 
   sources: { paddingHorizontal: 12 },
   sourceCard: { paddingVertical: 12 },
   sourceTitle: { ...type.body, color: colors.text, lineHeight: 15 * 1.15 },
-  sourceRule: { height: StyleSheet.hairlineWidth, backgroundColor: colors.border, marginTop: 14 },
+  sourceRule: { height: StyleSheet.hairlineWidth, backgroundColor: colors.surfaceBorder, marginTop: 14 },
   sourceMeta: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 12 },
   favicon: {
     width: 20,
@@ -364,6 +366,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.pill,
     alignItems: 'center',
     justifyContent: 'center',
+    ...controlStroke,
   },
   sourceDomain: { ...type.label, color: colors.textMuted },
 });
