@@ -11,7 +11,8 @@ import {
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
-import Animated, { FadeIn, FadeInDown, FadeOut } from 'react-native-reanimated';
+import Animated, { FadeIn, FadeInDown, FadeOut, LinearTransition } from 'react-native-reanimated';
+import { ACCORDION, ACCORDION_MS } from '../motion';
 
 import { Composer } from '../components/Composer';
 import { ProgressPercent, ProgressStripe } from '../components/ProgressStripe';
@@ -71,6 +72,8 @@ export function ChatScreen() {
   // bring it back into view instead of leaving it above the scroll position.
   const turnY = useRef<Record<string, number>>({});
   const panelY = useRef<Record<string, number>>({});
+  const scrollY = useRef(0);
+  const viewportH = useRef(0);
 
   const clearTimers = useCallback(() => {
     timers.current.forEach(clearTimeout);
@@ -89,13 +92,18 @@ export function ChatScreen() {
 
   const busy = turns.some((t) => t.status === 'thinking' || t.status === 'researching' || t.status === 'writing');
 
-  // Wait for the panel's height animation to settle before scrolling, so the
-  // two movements don't fight each other and land on a stale offset.
+  /**
+   * Bring a panel into view only when it is actually off-screen. Scrolling on
+   * every expand added a second movement right after the height animation,
+   * which read as a bounce.
+   */
   const scrollToPanel = useCallback((id: string) => {
     setTimeout(() => {
       const y = (turnY.current[id] ?? 0) + (panelY.current[id] ?? 0);
+      const offset = y - scrollY.current;
+      if (offset >= 0 && offset < viewportH.current - 120) return;
       scroller.current?.scrollTo({ y: Math.max(0, y - 16), animated: true });
-    }, 320);
+    }, ACCORDION_MS + 20);
   }, []);
 
   const send = useCallback(
@@ -208,6 +216,13 @@ export function ChatScreen() {
               contentContainerStyle={styles.scrollContent}
               showsVerticalScrollIndicator={false}
               keyboardDismissMode="interactive"
+              scrollEventThrottle={16}
+              onScroll={(e) => {
+                scrollY.current = e.nativeEvent.contentOffset.y;
+              }}
+              onLayout={(e) => {
+                viewportH.current = e.nativeEvent.layout.height;
+              }}
               onContentSizeChange={() => {
                 if (busy) scroller.current?.scrollToEnd({ animated: true });
               }}
@@ -444,7 +459,9 @@ function ProTurn({
       </View>
 
       {!researching && (
-        <ReportView blocks={turn.answer.report} stream={turn.status === 'writing'} onComplete={onReportDone} />
+        <Animated.View layout={LinearTransition.duration(ACCORDION_MS).easing(ACCORDION)}>
+          <ReportView blocks={turn.answer.report} stream={turn.status === 'writing'} onComplete={onReportDone} />
+        </Animated.View>
       )}
     </View>
   );
