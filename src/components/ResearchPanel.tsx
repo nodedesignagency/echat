@@ -15,7 +15,7 @@ import Animated, {
 import { CheckIcon, ChevronIcon } from './icons';
 import { LogoMark } from './Logo';
 import { colors, controlStroke, insetShadow, layout, pillShadow, surfaceShadow, type } from '../theme';
-import { glide } from '../motion';
+import { glide, SMOOTH } from '../motion';
 import type { Source } from '../engine/mock';
 
 export type StepState = 'pending' | 'active' | 'done';
@@ -299,7 +299,7 @@ export function ResearchPanel({ title, mode, onToggle, steps, sources, tab, onTa
   );
 
   return (
-    <Animated.View layout={LinearTransition.duration(320)} style={styles.panel}>
+    <Animated.View layout={LinearTransition.duration(300).easing(SMOOTH)} style={styles.panel}>
       <Pressable onPress={onToggle} style={styles.header} accessibilityRole="button">
         <Text style={styles.headerTitle}>{title}</Text>
         <View style={styles.headerSpacer} />
@@ -309,12 +309,12 @@ export function ResearchPanel({ title, mode, onToggle, steps, sources, tab, onTa
         </Animated.View>
       </Pressable>
 
-      <View style={styles.divider} />
+      {mode !== 'collapsed' && <View style={styles.divider} />}
 
       {mode !== 'collapsed' && (
         <Animated.View
-          entering={FadeIn.duration(220)}
-          exiting={FadeOut.duration(140)}
+          entering={FadeIn.duration(240).delay(60)}
+          exiting={FadeOut.duration(120)}
           style={live ? styles.bodyLive : undefined}
         >
           {live ? (

@@ -89,9 +89,13 @@ export function ChatScreen() {
 
   const busy = turns.some((t) => t.status === 'thinking' || t.status === 'researching' || t.status === 'writing');
 
+  // Wait for the panel's height animation to settle before scrolling, so the
+  // two movements don't fight each other and land on a stale offset.
   const scrollToPanel = useCallback((id: string) => {
-    const y = (turnY.current[id] ?? 0) + (panelY.current[id] ?? 0);
-    scroller.current?.scrollTo({ y: Math.max(0, y - 16), animated: true });
+    setTimeout(() => {
+      const y = (turnY.current[id] ?? 0) + (panelY.current[id] ?? 0);
+      scroller.current?.scrollTo({ y: Math.max(0, y - 16), animated: true });
+    }, 320);
   }, []);
 
   const send = useCallback(
@@ -231,7 +235,7 @@ export function ChatScreen() {
                       }}
                       onTab={(tab) => {
                         patch(turn.id, (t) => ({ tab, panel: t.panel === 'collapsed' ? 'expanded' : t.panel }));
-                        scrollToPanel(turn.id);
+                        if (turn.panel !== 'live') scrollToPanel(turn.id);
                       }}
                       onReportDone={() => patch(turn.id, () => ({ status: 'done' }))}
                     />
