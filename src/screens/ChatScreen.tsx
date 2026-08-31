@@ -367,7 +367,9 @@ function QuickTurn({ turn, onDone }: { turn: Turn; onDone: () => void }) {
       <View style={styles.avatarSlot}>
         <AssistantAvatar thinking={thinking} />
       </View>
-      <StatusLine text={thinking ? 'EDITH is thinking…' : turn.answer.label} dim={!thinking} />
+      <View style={styles.labelRow}>
+        <StatusLine text={thinking ? 'EDITH is thinking…' : turn.answer.label} dim={!thinking} />
+      </View>
       {!thinking && (
         <Animated.View entering={FadeIn.duration(240)} style={styles.answerWrap}>
           <RevealText
@@ -466,6 +468,8 @@ const styles = StyleSheet.create({
   firstTurn: { paddingTop: 40 },
   turn: { paddingTop: 28 },
   avatarSlot: { marginTop: 24 },
+  // Figma leaves 12px between the assistant tile and the label under it.
+  labelRow: { marginTop: 12 },
   statusRow: {
     marginTop: 12,
     flexDirection: 'row',
