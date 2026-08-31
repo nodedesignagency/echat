@@ -36,9 +36,12 @@ export const colors = {
   toggleTrackOn: 'rgba(255,255,255,0.14)',
   focusBorder: '#3A3A40',        // derived — composer stroke while focused
 
-  /* Panel internals. Only the Main frame could be sampled, so these are
-   * derived from the measured palette rather than read off the design. */
-  segment: 'rgba(255,255,255,0.04)',      // tab group background
+  /* Tab group, read from the Figma inspector: the track is the page colour
+   * with a #403F44 hairline and an inner shadow, so it reads as recessed. */
+  segment: '#0B0B0D',
+  segmentBorder: '#403F44',
+  segmentPillBorder: '#2C2B30',
+
   ring: 'rgba(255,255,255,0.18)',         // active step pulse
   rail: 'rgba(255,255,255,0.10)',         // timeline connector, pending
   railActive: 'rgba(255,255,255,0.55)',   // timeline connector, drawn
@@ -68,6 +71,17 @@ export const controlStroke = {
 export const surfaceShadow = {
   boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.45)',
 } as const;
+
+/** Inner shadow on the tab track (Figma: 0/0, blur 7.3, black 53%). */
+export const insetShadow = {
+  boxShadow: 'inset 0px 0px 7.3px rgba(0, 0, 0, 0.53)',
+} as const;
+
+/** Drop shadow under the selected tab pill. */
+export const pillShadow = {
+  boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.5)',
+} as const;
+
 
 export const layout = {
   /** Figma frame width — used to scale paddings on wider devices. */

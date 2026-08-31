@@ -10,12 +10,12 @@ import Animated, {
   withDelay,
   withRepeat,
   withSequence,
-  withSpring,
   withTiming,
 } from 'react-native-reanimated';
 import { CheckIcon, ChevronIcon } from './icons';
 import { LogoMark } from './Logo';
-import { colors, controlStroke, layout, surfaceShadow, type } from '../theme';
+import { colors, controlStroke, insetShadow, layout, pillShadow, surfaceShadow, type } from '../theme';
+import { glide } from '../motion';
 import type { Source } from '../engine/mock';
 
 export type StepState = 'pending' | 'active' | 'done';
@@ -48,7 +48,7 @@ function StepNode({ state }: { state: StepState }) {
   }, [state, pulse]);
 
   useEffect(() => {
-    pop.value = withSpring(state === 'done' ? 1 : 0, { damping: 12, stiffness: 260 });
+    pop.value = glide(state === 'done' ? 1 : 0, 320);
   }, [state, pop]);
 
   const ringStyle = useAnimatedStyle(() => ({
@@ -196,9 +196,8 @@ function Tabs({ tab, onChange, count }: { tab: Tab; onChange: (t: Tab) => void; 
   useEffect(() => {
     const b = box[tab];
     if (!b.w) return;
-    const spring = { damping: 18, stiffness: 220 };
-    x.value = width.value === 0 ? b.x : withSpring(b.x, spring);
-    width.value = width.value === 0 ? b.w : withSpring(b.w, spring);
+    x.value = width.value === 0 ? b.x : glide(b.x);
+    width.value = width.value === 0 ? b.w : glide(b.w);
   }, [tab, box, x, width]);
 
   const indicator = useAnimatedStyle(() => ({
@@ -249,6 +248,9 @@ export function ResearchPanel({ title, mode, onToggle, steps, sources, tab, onTa
   const scroller = useRef<ScrollView>(null);
 
   const activeIndex = steps.findIndex((s) => s.state === 'active');
+  // The short live window only makes sense for the running timeline; sources
+  // always size to their content.
+  const live = mode === 'live' && tab === 'activity';
 
   useEffect(() => {
     chevron.value = withTiming(mode === 'expanded' ? 1 : 0, { duration: 300 });
@@ -256,13 +258,13 @@ export function ResearchPanel({ title, mode, onToggle, steps, sources, tab, onTa
 
   // While researching, keep the running step in view inside the short window.
   useEffect(() => {
-    if (mode !== 'live' || activeIndex < 0) return;
+    if (!live || activeIndex < 0) return;
     const id = setTimeout(() => {
       const y = stepY.current[activeIndex] ?? activeIndex * STEP_PITCH;
       scroller.current?.scrollTo({ y: Math.max(0, y - 4), animated: true });
     }, 220);
     return () => clearTimeout(id);
-  }, [activeIndex, mode]);
+  }, [activeIndex, live]);
 
   const chevronStyle = useAnimatedStyle(() => ({
     transform: [{ rotate: `${chevron.value * 180}deg` }],
@@ -313,9 +315,9 @@ export function ResearchPanel({ title, mode, onToggle, steps, sources, tab, onTa
         <Animated.View
           entering={FadeIn.duration(220)}
           exiting={FadeOut.duration(140)}
-          style={mode === 'live' ? styles.bodyLive : undefined}
+          style={live ? styles.bodyLive : undefined}
         >
-          {mode === 'live' ? (
+          {live ? (
             <ScrollView
               ref={scroller}
               scrollEnabled={false}
@@ -351,26 +353,33 @@ const styles = StyleSheet.create({
   content: { paddingTop: 16, paddingBottom: 16 },
 
   headerSpacer: { flex: 1 },
+  // Figma: 191x39 track, fully rounded, page-coloured fill, #403F44 hairline
+  // and an inner shadow so it reads as recessed.
   tabs: {
     height: 39,
     flexDirection: 'row',
     alignItems: 'center',
     padding: 6,
     gap: 4,
-    borderRadius: 16,
+    borderRadius: 999,
     backgroundColor: colors.segment,
     borderWidth: 1,
-    borderColor: colors.controlBorder,
+    borderColor: colors.segmentBorder,
+    overflow: 'hidden',
+    ...insetShadow,
   },
+  // Figma: 65x27 pill, fully rounded, #292929, gradient stroke, drop shadow.
   tabIndicator: {
     position: 'absolute',
     top: 6,
     bottom: 6,
-    borderRadius: 13,
+    borderRadius: 999,
     backgroundColor: colors.pill,
     ...controlStroke,
+    borderBottomColor: colors.segmentPillBorder,
+    ...pillShadow,
   },
-  tab: { height: 27, paddingHorizontal: 12, alignItems: 'center', justifyContent: 'center' },
+  tab: { height: 27, paddingHorizontal: 12, alignItems: 'center', justifyContent: 'center', borderRadius: 999 },
   tabText: { ...type.small, color: colors.textBody },
   tabTextOn: { color: colors.text },
 

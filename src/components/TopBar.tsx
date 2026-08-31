@@ -1,9 +1,10 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import Animated, { FadeInDown, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import Animated, { FadeInDown, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import { ComposeIcon, HistoryIcon, SelectorIcon, SettingsIcon } from './icons';
 import { LogoMark } from './Logo';
 import { colors, controlStroke, layout, motion, type } from '../theme';
+import { tap } from '../motion';
 
 /** 32x32 rounded icon button used across the header, with a press-in spring. */
 export function IconButton({
@@ -28,8 +29,8 @@ export function IconButton({
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       hitSlop={8}
-      onPressIn={() => (press.value = withTiming(1, { duration: 90 }))}
-      onPressOut={() => (press.value = withSpring(0, { damping: 14, stiffness: 260 }))}
+      onPressIn={() => (press.value = tap(1, 110))}
+      onPressOut={() => (press.value = tap(0))}
       onPress={onPress}
     >
       <Animated.View

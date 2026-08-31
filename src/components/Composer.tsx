@@ -5,12 +5,12 @@ import Animated, {
   interpolateColor,
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
   withTiming,
 } from 'react-native-reanimated';
 import { Hatch } from './Hatch';
 import { ArrowUpIcon, PlusIcon, WaveformIcon } from './icons';
 import { colors, controlStroke, layout, surfaceShadow, type } from '../theme';
+import { glide, tap } from '../motion';
 
 /* Figma composer is 114 tall: 1px stroke, a 56 input row, a 1px rule,
  * a 55 toolbar row, then the closing 1px stroke. */
@@ -22,7 +22,7 @@ function ProToggle({ on }: { on: boolean }) {
   const v = useSharedValue(on ? 1 : 0);
 
   useEffect(() => {
-    v.value = withSpring(on ? 1 : 0, { damping: 16, stiffness: 220 });
+    v.value = glide(on ? 1 : 0, 240);
   }, [on, v]);
 
   const track = useAnimatedStyle(() => ({
@@ -76,7 +76,7 @@ export function Composer({
   const ready = useSharedValue(0);
 
   useEffect(() => {
-    ready.value = withSpring(canSend ? 1 : 0, { damping: 15, stiffness: 240 });
+    ready.value = glide(canSend ? 1 : 0, 220);
   }, [canSend, ready]);
 
   const cardStyle = useAnimatedStyle(() => ({
@@ -120,8 +120,8 @@ export function Composer({
           accessibilityLabel="Message EDITH"
         />
         <Pressable
-          onPressIn={() => (sendPress.value = withTiming(1, { duration: 90 }))}
-          onPressOut={() => (sendPress.value = withSpring(0, { damping: 13, stiffness: 280 }))}
+          onPressIn={() => (sendPress.value = tap(1, 110))}
+          onPressOut={() => (sendPress.value = tap(0))}
           onPress={handleSend}
           disabled={!canSend}
           hitSlop={8}

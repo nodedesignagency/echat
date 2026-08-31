@@ -65,6 +65,9 @@ thread:
 - Panel height animates between its live, collapsed and expanded modes via a
   layout transition (no measured height, so content can never clip), and the
   tab indicator slides between measured tab positions
+- Every transition uses one overshoot-free curve from `src/motion.ts`; springs
+  were letting the tab indicator and the Pro Search knob bounce outside their
+  tracks
 - Sheets slide up over a fading backdrop; the voice overlay runs 26 independent
   waveform bars
 
@@ -105,6 +108,11 @@ each token is commented `measured` or `derived`:
 | `send` / `sendBorder` | `#CECECE` / `#EBEBEB` | measured |
 | `placeholder` | `#3E3E40` | measured |
 | `hatch` | `+4 levels`, 9.3px pitch, 4.4px stripe | measured |
+
+The tab group was read straight from the Figma inspector: a fully rounded
+track filled with the page colour `#0B0B0D`, a `#403F44` hairline and an inner
+shadow (0/0, blur 7.3, black 53%) so it reads as recessed, with the selected
+pill on `#292929` carrying a gradient stroke and a drop shadow.
 
 Two details that are easy to miss and were checked explicitly:
 
