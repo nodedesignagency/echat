@@ -103,6 +103,8 @@ each token is commented `measured` or `derived`:
 | `surface` | `#0E0E10` | measured — composer / panel fill |
 | `surfaceBorder` | `#1C1C1E` | measured — 1px stroke around surfaces |
 | `divider` | `#2D2D2F` | measured — rule between composer rows |
+| `panelHeader` | `#181818` | Figma — the 369x55 panel header block |
+| `composerBorder` | `#252527` @ 60% | Figma — composer stroke |
 | `pill` | `#292929` | measured — every control fill |
 | `controlBorderTop/·/Bottom` | `#444248` / `#37363B` / `#2B2A2F` | measured — the bevelled control stroke |
 | `send` / `sendBorder` | `#CECECE` / `#EBEBEB` | measured |
@@ -133,8 +135,10 @@ inferred from the measured palette rather than read off the design.
 
 ## Notes
 
-- The composer is 369x114 at a 12px gutter — 1px stroke, 56px input row, 1px
-  rule, 55px toolbar row, 1px stroke — matching the file exactly.
+- The composer is 369x114 at a 12px gutter with a 28px radius — 1px stroke,
+  56px input row, 1px rule, 55px toolbar row, 1px stroke — matching the file.
+- The conversation fades out at both edges with a gradient rather than being
+  chopped off under the header or above the composer.
 - The logo is a traced vector of the original artwork (four blades at 90-degree
   steps plus the centre sparkle), not an approximation.
 - Attachments are the one control that is presentational — the `+` sheet offers

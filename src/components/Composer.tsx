@@ -80,7 +80,7 @@ export function Composer({
   }, [canSend, ready]);
 
   const cardStyle = useAnimatedStyle(() => ({
-    borderColor: interpolateColor(focus.value, [0, 1], [colors.surfaceBorder, colors.focusBorder]),
+    borderColor: interpolateColor(focus.value, [0, 1], [colors.composerBorder, colors.focusBorder]),
     transform: [{ translateY: -focus.value * 2 }],
   }));
 

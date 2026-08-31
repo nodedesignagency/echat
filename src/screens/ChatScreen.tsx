@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import Animated, { FadeIn, FadeInDown, FadeOut } from 'react-native-reanimated';
 
@@ -196,49 +197,62 @@ export function ChatScreen() {
             </Animated.View>
           </View>
         ) : (
-          <ScrollView
-            ref={scroller}
-            style={styles.flex}
-            contentContainerStyle={styles.scrollContent}
-            showsVerticalScrollIndicator={false}
-            keyboardDismissMode="interactive"
-            onContentSizeChange={() => {
-              if (busy) scroller.current?.scrollToEnd({ animated: true });
-            }}
-          >
-            {turns.map((turn, index) => (
-              <View
-                key={turn.id}
-                style={index === 0 ? styles.firstTurn : styles.turn}
-                onLayout={(e) => {
-                  turnY.current[turn.id] = e.nativeEvent.layout.y;
-                }}
-              >
-                <UserBubble text={turn.question} />
+          <View style={styles.flex}>
+            <ScrollView
+              ref={scroller}
+              style={styles.flex}
+              contentContainerStyle={styles.scrollContent}
+              showsVerticalScrollIndicator={false}
+              keyboardDismissMode="interactive"
+              onContentSizeChange={() => {
+                if (busy) scroller.current?.scrollToEnd({ animated: true });
+              }}
+            >
+              {turns.map((turn, index) => (
+                <View
+                  key={turn.id}
+                  style={index === 0 ? styles.firstTurn : styles.turn}
+                  onLayout={(e) => {
+                    turnY.current[turn.id] = e.nativeEvent.layout.y;
+                  }}
+                >
+                  <UserBubble text={turn.question} />
 
-                {turn.pro ? (
-                  <ProTurn
-                    turn={turn}
-                    width={composerWidth}
-                    onLayoutPanel={(y) => {
-                      panelY.current[turn.id] = y;
-                    }}
-                    onPanel={(panel) => {
-                      patch(turn.id, () => ({ panel }));
-                      if (panel === 'expanded') scrollToPanel(turn.id);
-                    }}
-                    onTab={(tab) => {
-                      patch(turn.id, (t) => ({ tab, panel: t.panel === 'collapsed' ? 'expanded' : t.panel }));
-                      scrollToPanel(turn.id);
-                    }}
-                    onReportDone={() => patch(turn.id, () => ({ status: 'done' }))}
-                  />
-                ) : (
-                  <QuickTurn turn={turn} onDone={() => patch(turn.id, () => ({ status: 'done' }))} />
-                )}
-              </View>
-            ))}
-          </ScrollView>
+                  {turn.pro ? (
+                    <ProTurn
+                      turn={turn}
+                      width={composerWidth}
+                      onLayoutPanel={(y) => {
+                        panelY.current[turn.id] = y;
+                      }}
+                      onPanel={(panel) => {
+                        patch(turn.id, () => ({ panel }));
+                        if (panel === 'expanded') scrollToPanel(turn.id);
+                      }}
+                      onTab={(tab) => {
+                        patch(turn.id, (t) => ({ tab, panel: t.panel === 'collapsed' ? 'expanded' : t.panel }));
+                        scrollToPanel(turn.id);
+                      }}
+                      onReportDone={() => patch(turn.id, () => ({ status: 'done' }))}
+                    />
+                  ) : (
+                    <QuickTurn turn={turn} onDone={() => patch(turn.id, () => ({ status: 'done' }))} />
+                  )}
+                </View>
+              ))}
+            </ScrollView>
+
+            <LinearGradient
+              pointerEvents="none"
+              colors={[colors.bg, `${colors.bg}00`]}
+              style={[styles.fade, styles.fadeTop]}
+            />
+            <LinearGradient
+              pointerEvents="none"
+              colors={[`${colors.bg}00`, colors.bg]}
+              style={[styles.fade, styles.fadeBottom]}
+            />
+          </View>
         )}
 
         <Composer
@@ -446,6 +460,9 @@ const styles = StyleSheet.create({
     ...controlStroke,
   },
   scrollContent: { paddingBottom: 24 },
+  fade: { position: 'absolute', left: 0, right: 0, height: 28 },
+  fadeTop: { top: 0 },
+  fadeBottom: { bottom: 0, height: 32 },
   firstTurn: { paddingTop: 40 },
   turn: { paddingTop: 28 },
   avatarSlot: { marginTop: 24 },

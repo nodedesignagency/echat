@@ -345,9 +345,18 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     ...surfaceShadow,
   },
-  header: { height: HEADER, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, gap: 8 },
+  // Figma: the header is its own 369x55 block filled #181818, with the panel's
+  // radius on its top corners only (clipped by the panel).
+  header: {
+    height: HEADER,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    gap: 8,
+    backgroundColor: colors.panelHeader,
+  },
   headerTitle: { ...type.label, color: colors.text, flexShrink: 0 },
-  divider: { height: StyleSheet.hairlineWidth, backgroundColor: colors.surfaceBorder },
+  divider: { height: 1, backgroundColor: colors.segmentPillBorder },
   bodyLive: { height: LIVE_BODY, overflow: 'hidden' },
   liveScroll: { paddingBottom: 8 },
   content: { paddingTop: 16, paddingBottom: 16 },

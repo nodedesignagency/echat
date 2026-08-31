@@ -11,7 +11,9 @@ export const colors = {
    */
   bg: '#0B0B0D',                 // measured — page background
   surface: '#0E0E10',            // measured — composer / panel fill
+  panelHeader: '#181818',        // Figma — the 369x55 panel header block
   surfaceBorder: '#1C1C1E',      // measured — 1px stroke around surfaces
+  composerBorder: 'rgba(37, 37, 39, 0.6)',  // Figma — #252527 at 60%
   divider: '#2D2D2F',            // measured — rule between composer rows
   pill: '#292929',               // measured — every control fill
 
@@ -88,7 +90,7 @@ export const layout = {
   frameWidth: 393,
   gutter: 12,
   composerHeight: 114,
-  composerRadius: 20,
+  composerRadius: 28,   // Figma
   headerIcon: 32,
   pillHeight: 33,
   panelRadius: 16,
